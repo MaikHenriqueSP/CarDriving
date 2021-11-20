@@ -48,8 +48,14 @@ void OpenGLWindow::initializeGL() {
   // Load default model
   loadModel("formula_1_mesh.obj", "maps/formula1_DefaultMaterial_Diffuse.png", &m_carModel);
   m_mappingMode = 3;  // "From mesh" option
+  m_carModel.m_modelMatrix = glm::translate(m_carModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, -0.5f));
   m_carModel.m_modelMatrix = glm::rotate(m_carModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
 
+
+  loadModel("road.obj", "maps/road.jpg", &m_roadModel);
+  m_roadModel.m_modelMatrix = glm::translate(m_roadModel.m_modelMatrix, glm::vec3(0.0f, -0.25f, -1.0f));
+  m_roadModel.m_modelMatrix = glm::rotate(m_roadModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+  m_roadModel.m_modelMatrix = glm::scale(m_roadModel.m_modelMatrix, glm::vec3(20.0f, 1.0f, 20.0f));
   resizeGL(getWindowSettings().width, getWindowSettings().height);
 }
 
@@ -108,18 +114,27 @@ void OpenGLWindow::paintGL() {
   //@TODO: Adjust for car and street  
 
   // Set uniform variables of the current object
+  //CAR
   glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &m_carModel.m_modelMatrix[0][0]);
-
   auto modelViewMatrix{glm::mat3(m_camera.m_viewMatrix * m_carModel.m_modelMatrix)};
   glm::mat3 normalMatrix{glm::inverseTranspose(modelViewMatrix)};
   glUniformMatrix3fv(normalMatrixLoc, 1, GL_FALSE, &normalMatrix[0][0]);
-
   glUniform1f(shininessLoc, m_shininess);
   glUniform4fv(KaLoc, 1, &m_Ka.x);
   glUniform4fv(KdLoc, 1, &m_Kd.x);
   glUniform4fv(KsLoc, 1, &m_Ks.x);
-
   m_carModel.render();
+
+//ROAD
+  glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &m_roadModel.m_modelMatrix[0][0]);
+  auto modelViewMatrixRoad{glm::mat3(m_camera.m_viewMatrix * m_roadModel.m_modelMatrix)};
+  glm::mat3 normalMatrixRoad{glm::inverseTranspose(modelViewMatrixRoad)};
+  glUniformMatrix3fv(normalMatrixLoc, 1, GL_FALSE, &normalMatrixRoad[0][0]);
+  glUniform1f(shininessLoc, m_shininess);
+  glUniform4fv(KaLoc, 1, &m_Ka.x);
+  glUniform4fv(KdLoc, 1, &m_Kd.x);
+  glUniform4fv(KsLoc, 1, &m_Ks.x);
+  m_roadModel.render();
 
   glUseProgram(0);
 }
