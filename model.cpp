@@ -286,3 +286,4 @@ void Model::standardize() {
     vertex.position = (vertex.position - center) * scaling;
   }
 }
+

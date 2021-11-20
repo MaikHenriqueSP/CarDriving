@@ -44,6 +44,8 @@ class Model {
 
   [[nodiscard]] bool isUVMapped() const { return m_hasTexCoords; }
 
+  glm::mat4 m_modelMatrix{1.0f};
+
  private:
   GLuint m_VAO{};
   GLuint m_VBO{};
@@ -57,6 +59,8 @@ class Model {
 
   std::vector<Vertex> m_vertices;
   std::vector<GLuint> m_indices;
+
+  
 
   bool m_hasNormals{false};
   bool m_hasTexCoords{false};

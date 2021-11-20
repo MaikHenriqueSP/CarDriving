@@ -48,20 +48,21 @@ void OpenGLWindow::initializeGL() {
   // Load default model
   loadModel(getAssetsPath() + "formula_1_mesh.obj");
   m_mappingMode = 3;  // "From mesh" option
+  m_carModel.m_modelMatrix = glm::rotate(m_carModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
   resizeGL(getWindowSettings().width, getWindowSettings().height);
 }
 
 void OpenGLWindow::loadModel(std::string_view path) {
-  m_model.loadDiffuseTexture(getAssetsPath() + "maps/formula1_DefaultMaterial_Diffuse.png");
-  m_model.loadFromFile(path);
-  m_model.setupVAO(m_programs.at(m_currentProgramIndex));
-  m_trianglesToDraw = m_model.getNumTriangles();
+  m_carModel.loadDiffuseTexture(getAssetsPath() + "maps/formula1_DefaultMaterial_Diffuse.png");
+  m_carModel.loadFromFile(path);
+  m_carModel.setupVAO(m_programs.at(m_currentProgramIndex));
+  m_trianglesToDraw = m_carModel.getNumTriangles();
 
   // Use material properties from the loaded model
-  m_Ka = m_model.getKa();
-  m_Kd = m_model.getKd();
-  m_Ks = m_model.getKs();
-  m_shininess = m_model.getShininess();
+  m_Ka = m_carModel.getKa();
+  m_Kd = m_carModel.getKd();
+  m_Ks = m_carModel.getKs();
+  m_shininess = m_carModel.getShininess();
 }
 
 void OpenGLWindow::paintGL() {
@@ -105,12 +106,11 @@ void OpenGLWindow::paintGL() {
   glUniform4fv(IsLoc, 1, &m_Is.x);
 
   //@TODO: Adjust for car and street  
-  glm::mat4 m_modelMatrix{1.0f};
 
   // Set uniform variables of the current object
-  glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &m_modelMatrix[0][0]);
+  glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &m_carModel.m_modelMatrix[0][0]);
 
-  auto modelViewMatrix{glm::mat3(m_camera.m_viewMatrix * m_modelMatrix)};
+  auto modelViewMatrix{glm::mat3(m_camera.m_viewMatrix * m_carModel.m_modelMatrix)};
   glm::mat3 normalMatrix{glm::inverseTranspose(modelViewMatrix)};
   glUniformMatrix3fv(normalMatrixLoc, 1, GL_FALSE, &normalMatrix[0][0]);
 
@@ -119,7 +119,7 @@ void OpenGLWindow::paintGL() {
   glUniform4fv(KdLoc, 1, &m_Kd.x);
   glUniform4fv(KsLoc, 1, &m_Ks.x);
 
-  m_model.render(m_trianglesToDraw);
+  m_carModel.render(m_trianglesToDraw);
 
   glUseProgram(0);
 }
@@ -150,7 +150,7 @@ void OpenGLWindow::paintUI() {
   {
     auto widgetSize{ImVec2(222, 190)};
 
-    if (!m_model.isUVMapped()) {
+    if (!m_carModel.isUVMapped()) {
       // Add extra space for static text
       widgetSize.y += 26;
     }
@@ -178,7 +178,7 @@ void OpenGLWindow::paintUI() {
 
     // Slider will be stretched horizontally
     ImGui::PushItemWidth(widgetSize.x - 16);
-    ImGui::SliderInt("", &m_trianglesToDraw, 0, m_model.getNumTriangles(),
+    ImGui::SliderInt("", &m_trianglesToDraw, 0, m_carModel.getNumTriangles(),
                      "%d triangles");
     ImGui::PopItemWidth();
 
@@ -265,11 +265,11 @@ void OpenGLWindow::paintUI() {
       // Set up VAO if shader program has changed
       if (static_cast<int>(currentIndex) != m_currentProgramIndex) {
         m_currentProgramIndex = currentIndex;
-        m_model.setupVAO(m_programs.at(m_currentProgramIndex));
+        m_carModel.setupVAO(m_programs.at(m_currentProgramIndex));
       }
     }
 
-    if (!m_model.isUVMapped()) {
+    if (!m_carModel.isUVMapped()) {
       ImGui::TextColored(ImVec4(1, 1, 0, 1), "Mesh has no UV coords.");
     }
 
@@ -278,7 +278,7 @@ void OpenGLWindow::paintUI() {
       std::vector<std::string> comboItems{"Triplanar", "Cylindrical",
                                           "Spherical"};
 
-      if (m_model.isUVMapped()) comboItems.emplace_back("From mesh");
+      if (m_carModel.isUVMapped()) comboItems.emplace_back("From mesh");
 
       ImGui::PushItemWidth(120);
       if (ImGui::BeginCombo("UV mapping",
@@ -338,7 +338,7 @@ void OpenGLWindow::paintUI() {
     loadModel(fileDialogModel.GetSelected().string());
     fileDialogModel.ClearSelected();
 
-    if (m_model.isUVMapped()) {
+    if (m_carModel.isUVMapped()) {
       // Use mesh texture coordinates if available...
       m_mappingMode = 3;
     } else {
@@ -349,7 +349,7 @@ void OpenGLWindow::paintUI() {
 
   fileDialogTex.Display();
   if (fileDialogTex.HasSelected()) {
-    m_model.loadDiffuseTexture(fileDialogTex.GetSelected().string());
+    m_carModel.loadDiffuseTexture(fileDialogTex.GetSelected().string());
     fileDialogTex.ClearSelected();
   }
 }
