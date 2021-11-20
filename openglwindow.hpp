@@ -49,6 +49,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
 
   void loadModel(std::string objectPath, std::string texturePath, Model* model);
   void update();
+  void configureModel(Model* model);
 
   Camera m_camera;
   float m_dollySpeed{0.0f};

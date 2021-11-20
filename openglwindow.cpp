@@ -38,19 +38,16 @@ void OpenGLWindow::initializeGL() {
   glClearColor(0, 0, 0, 1);
   glEnable(GL_DEPTH_TEST);
 
-  // Create programs
   for (const auto& name : m_shaderNames) {
     auto path{getAssetsPath() + "shaders/" + name};
     auto program{createProgramFromFile(path + ".vert", path + ".frag")};
     m_programs.push_back(program);
   }
 
-  // Load default model
   loadModel("formula_1_mesh.obj", "maps/formula1_DefaultMaterial_Diffuse.png", &m_carModel);
   m_mappingMode = 3;  // "From mesh" option
   m_carModel.m_modelMatrix = glm::translate(m_carModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, -0.5f));
   m_carModel.m_modelMatrix = glm::rotate(m_carModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
-
 
   loadModel("road.obj", "maps/road.jpg", &m_roadModel);
   m_roadModel.m_modelMatrix = glm::translate(m_roadModel.m_modelMatrix, glm::vec3(0.0f, -0.25f, -1.0f));
@@ -63,12 +60,6 @@ void OpenGLWindow::loadModel(std::string objectPath, std::string texturePath, Mo
   model->loadDiffuseTexture(getAssetsPath() + texturePath);
   model->loadFromFile(getAssetsPath() + objectPath);
   model->setupVAO(m_programs.at(m_currentProgramIndex));
-
-  // Use material properties from the loaded model
-  m_Ka = m_carModel.getKa();    //@TODO: MAKE IT MODEL DEPENDENT
-  m_Kd = m_carModel.getKd();
-  m_Ks = m_carModel.getKs();
-  m_shininess = m_carModel.getShininess();
 }
 
 void OpenGLWindow::paintGL() {
@@ -77,23 +68,15 @@ void OpenGLWindow::paintGL() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glViewport(0, 0, m_viewportWidth, m_viewportHeight);
 
-  // Use currently selected program
   const auto program{m_programs.at(m_currentProgramIndex)};
   glUseProgram(program);
 
-  // Get location of uniform variables
   GLint viewMatrixLoc{glGetUniformLocation(program, "viewMatrix")};
   GLint projMatrixLoc{glGetUniformLocation(program, "projMatrix")};
-  GLint modelMatrixLoc{glGetUniformLocation(program, "modelMatrix")};
-  GLint normalMatrixLoc{glGetUniformLocation(program, "normalMatrix")};
   GLint lightDirLoc{glGetUniformLocation(program, "lightDirWorldSpace")};
-  GLint shininessLoc{glGetUniformLocation(program, "shininess")};
   GLint IaLoc{glGetUniformLocation(program, "Ia")};
   GLint IdLoc{glGetUniformLocation(program, "Id")};
   GLint IsLoc{glGetUniformLocation(program, "Is")};
-  GLint KaLoc{glGetUniformLocation(program, "Ka")};
-  GLint KdLoc{glGetUniformLocation(program, "Kd")};
-  GLint KsLoc{glGetUniformLocation(program, "Ks")};
   GLint diffuseTexLoc{glGetUniformLocation(program, "diffuseTex")};
   GLint mappingModeLoc{glGetUniformLocation(program, "mappingMode")};
 
@@ -111,32 +94,35 @@ void OpenGLWindow::paintGL() {
   glUniform4fv(IdLoc, 1, &m_Id.x);
   glUniform4fv(IsLoc, 1, &m_Is.x);
 
-  //@TODO: Adjust for car and street  
-
-  // Set uniform variables of the current object
-  //CAR
-  glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &m_carModel.m_modelMatrix[0][0]);
-  auto modelViewMatrix{glm::mat3(m_camera.m_viewMatrix * m_carModel.m_modelMatrix)};
-  glm::mat3 normalMatrix{glm::inverseTranspose(modelViewMatrix)};
-  glUniformMatrix3fv(normalMatrixLoc, 1, GL_FALSE, &normalMatrix[0][0]);
-  glUniform1f(shininessLoc, m_shininess);
-  glUniform4fv(KaLoc, 1, &m_Ka.x);
-  glUniform4fv(KdLoc, 1, &m_Kd.x);
-  glUniform4fv(KsLoc, 1, &m_Ks.x);
-  m_carModel.render();
-
-//ROAD
-  glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &m_roadModel.m_modelMatrix[0][0]);
-  auto modelViewMatrixRoad{glm::mat3(m_camera.m_viewMatrix * m_roadModel.m_modelMatrix)};
-  glm::mat3 normalMatrixRoad{glm::inverseTranspose(modelViewMatrixRoad)};
-  glUniformMatrix3fv(normalMatrixLoc, 1, GL_FALSE, &normalMatrixRoad[0][0]);
-  glUniform1f(shininessLoc, m_shininess);
-  glUniform4fv(KaLoc, 1, &m_Ka.x);
-  glUniform4fv(KdLoc, 1, &m_Kd.x);
-  glUniform4fv(KsLoc, 1, &m_Ks.x);
-  m_roadModel.render();
+  configureModel(&m_carModel);
+  configureModel(&m_roadModel);
 
   glUseProgram(0);
+}
+
+void OpenGLWindow::configureModel(Model* model) {
+  const auto program{m_programs.at(m_currentProgramIndex)};
+  auto modelMatrixLoc{glGetUniformLocation(program, "modelMatrix")};
+  auto shininessLoc{glGetUniformLocation(program, "shininess")};
+  auto normalMatrixLoc{glGetUniformLocation(program, "normalMatrix")};
+  auto KaLoc{glGetUniformLocation(program, "Ka")};
+  auto KdLoc{glGetUniformLocation(program, "Kd")};
+  auto KsLoc{glGetUniformLocation(program, "Ks")};
+
+  glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model->m_modelMatrix[0][0]);
+  auto modelViewMatrixRoad{glm::mat3(m_camera.m_viewMatrix * model->m_modelMatrix)};
+  glm::mat3 normalMatrixRoad{glm::inverseTranspose(modelViewMatrixRoad)};
+  glUniformMatrix3fv(normalMatrixLoc, 1, GL_FALSE, &normalMatrixRoad[0][0]);
+
+  auto modelKa = model->getKa();
+  auto modelKd = model->getKd();
+  auto modelKs = model->getKs();
+  
+  glUniform1f(shininessLoc, model->getShininess());
+  glUniform4fv(KaLoc, 1, &modelKa.x);
+  glUniform4fv(KdLoc, 1, &modelKd.x);
+  glUniform4fv(KsLoc, 1, &modelKs.x);
+  model->render();
 }
 
 void OpenGLWindow::paintUI() {
