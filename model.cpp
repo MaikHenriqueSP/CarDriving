@@ -202,7 +202,8 @@ void Model::loadFromFile(std::string_view path, bool standardize) {
   createBuffers();
 }
 
-void Model::render(int numTriangles) const {
+void Model::render() const {
+  int numTriangles = getNumTriangles();
   glBindVertexArray(m_VAO);
 
   glActiveTexture(GL_TEXTURE0);

@@ -30,7 +30,7 @@ class Model {
 
   void loadDiffuseTexture(std::string_view path);
   void loadFromFile(std::string_view path, bool standardize = true);
-  void render(int numTriangles = -1) const;
+  void render() const;
   void setupVAO(GLuint program);
 
   [[nodiscard]] int getNumTriangles() const {

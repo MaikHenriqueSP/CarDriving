@@ -21,6 +21,8 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   int m_viewportHeight{};
 
   Model m_carModel;
+  Model m_roadModel;
+
   int m_trianglesToDraw{};
 
   float m_zoom{};
@@ -45,7 +47,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   glm::vec4 m_Ks;
   float m_shininess{};
 
-  void loadModel(std::string_view path);
+  void loadModel(std::string objectPath, std::string texturePath, Model* model);
   void update();
 
   Camera m_camera;

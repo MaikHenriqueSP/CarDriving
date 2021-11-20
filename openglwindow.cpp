@@ -46,20 +46,20 @@ void OpenGLWindow::initializeGL() {
   }
 
   // Load default model
-  loadModel(getAssetsPath() + "formula_1_mesh.obj");
+  loadModel("formula_1_mesh.obj", "maps/formula1_DefaultMaterial_Diffuse.png", &m_carModel);
   m_mappingMode = 3;  // "From mesh" option
   m_carModel.m_modelMatrix = glm::rotate(m_carModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+
   resizeGL(getWindowSettings().width, getWindowSettings().height);
 }
 
-void OpenGLWindow::loadModel(std::string_view path) {
-  m_carModel.loadDiffuseTexture(getAssetsPath() + "maps/formula1_DefaultMaterial_Diffuse.png");
-  m_carModel.loadFromFile(path);
-  m_carModel.setupVAO(m_programs.at(m_currentProgramIndex));
-  m_trianglesToDraw = m_carModel.getNumTriangles();
+void OpenGLWindow::loadModel(std::string objectPath, std::string texturePath, Model* model) {
+  model->loadDiffuseTexture(getAssetsPath() + texturePath);
+  model->loadFromFile(getAssetsPath() + objectPath);
+  model->setupVAO(m_programs.at(m_currentProgramIndex));
 
   // Use material properties from the loaded model
-  m_Ka = m_carModel.getKa();
+  m_Ka = m_carModel.getKa();    //@TODO: MAKE IT MODEL DEPENDENT
   m_Kd = m_carModel.getKd();
   m_Ks = m_carModel.getKs();
   m_shininess = m_carModel.getShininess();
@@ -119,7 +119,7 @@ void OpenGLWindow::paintGL() {
   glUniform4fv(KdLoc, 1, &m_Kd.x);
   glUniform4fv(KsLoc, 1, &m_Ks.x);
 
-  m_carModel.render(m_trianglesToDraw);
+  m_carModel.render();
 
   glUseProgram(0);
 }
@@ -335,7 +335,7 @@ void OpenGLWindow::paintUI() {
 
   fileDialogModel.Display();
   if (fileDialogModel.HasSelected()) {
-    loadModel(fileDialogModel.GetSelected().string());
+    // loadModel(fileDialogModel.GetSelected().string());
     fileDialogModel.ClearSelected();
 
     if (m_carModel.isUVMapped()) {
