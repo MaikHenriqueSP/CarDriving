@@ -5,11 +5,11 @@
 
 #include "abcg.hpp"
 #include "model.hpp"
-#include "trackball.hpp"
+#include "camera.hpp"
 
 class OpenGLWindow : public abcg::OpenGLWindow {
  protected:
-  void handleEvent(SDL_Event& ev) override;
+  void handleEvent(SDL_Event& event) override;
   void initializeGL() override;
   void paintGL() override;
   void paintUI() override;
@@ -23,13 +23,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   Model m_model;
   int m_trianglesToDraw{};
 
-  TrackBall m_trackBallModel;
-  TrackBall m_trackBallLight;
   float m_zoom{};
-
-  glm::mat4 m_modelMatrix{1.0f};
-  glm::mat4 m_viewMatrix{1.0f};
-  glm::mat4 m_projMatrix{1.0f};
 
   // Shaders
   std::vector<const char*> m_shaderNames{"texture", "blinnphong", "phong",
@@ -53,6 +47,11 @@ class OpenGLWindow : public abcg::OpenGLWindow {
 
   void loadModel(std::string_view path);
   void update();
+
+  Camera m_camera;
+  float m_dollySpeed{0.0f};
+  float m_truckSpeed{0.0f};
+  float m_panSpeed{0.0f};
 };
 
 #endif
