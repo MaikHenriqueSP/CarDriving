@@ -7,10 +7,15 @@
 
 #include "imfilebrowser.h"
 
+
+
 void OpenGLWindow::handleEvent(SDL_Event& ev) {
+  float deltaTime{static_cast<float>(getDeltaTime())};
   if (ev.type == SDL_KEYDOWN) {
-    if (ev.key.keysym.sym == SDLK_UP || ev.key.keysym.sym == SDLK_w)
-      m_dollySpeed = 1.0f;
+    if (ev.key.keysym.sym == SDLK_UP || ev.key.keysym.sym == SDLK_w) {
+      // m_dollySpeed = 1.0f;
+      m_carModel.accelerate(deltaTime, 1);
+    }
     if (ev.key.keysym.sym == SDLK_DOWN || ev.key.keysym.sym == SDLK_s)
       m_dollySpeed = -1.0f;
     if (ev.key.keysym.sym == SDLK_LEFT || ev.key.keysym.sym == SDLK_a)
@@ -54,6 +59,7 @@ void OpenGLWindow::initializeGL() {
   m_roadModel.m_modelMatrix = glm::rotate(m_roadModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
   m_roadModel.m_modelMatrix = glm::scale(m_roadModel.m_modelMatrix, glm::vec3(20.0f, 1.0f, 20.0f));
   resizeGL(getWindowSettings().width, getWindowSettings().height);
+
 }
 
 void OpenGLWindow::loadModel(std::string objectPath, std::string texturePath, Model* model) {

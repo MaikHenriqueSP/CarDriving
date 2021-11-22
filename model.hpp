@@ -59,8 +59,7 @@ class Model {
 
   std::vector<Vertex> m_vertices;
   std::vector<GLuint> m_indices;
-
-  
+ 
 
   bool m_hasNormals{false};
   bool m_hasTexCoords{false};

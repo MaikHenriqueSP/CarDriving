@@ -6,6 +6,7 @@
 #include "abcg.hpp"
 #include "model.hpp"
 #include "camera.hpp"
+#include "vehicle.hpp"
 
 class OpenGLWindow : public abcg::OpenGLWindow {
  protected:
@@ -20,7 +21,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   int m_viewportWidth{};
   int m_viewportHeight{};
 
-  Model m_carModel;
+  Vehicle m_carModel;
   Model m_roadModel;
 
   int m_trianglesToDraw{};
