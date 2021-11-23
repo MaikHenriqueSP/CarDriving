@@ -10,14 +10,13 @@
 
 
 void OpenGLWindow::handleEvent(SDL_Event& ev) {
-  float deltaTime{static_cast<float>(getDeltaTime())};
   if (ev.type == SDL_KEYDOWN) {
     if (ev.key.keysym.sym == SDLK_UP || ev.key.keysym.sym == SDLK_w) {
-      m_dollySpeed = 1.0f;
+      // m_dollySpeed = 1.0f;
       m_carModel.setAction(Action::Forward);
     }
     if (ev.key.keysym.sym == SDLK_DOWN || ev.key.keysym.sym == SDLK_s) {
-      m_dollySpeed = -1.0f;
+      // m_dollySpeed = -1.0f;
       m_carModel.setAction(Action::Backward);
     }
     if (ev.key.keysym.sym == SDLK_LEFT || ev.key.keysym.sym == SDLK_a) {
@@ -32,22 +31,38 @@ void OpenGLWindow::handleEvent(SDL_Event& ev) {
     if (ev.key.keysym.sym == SDLK_e) m_truckSpeed = 1.0f;
   }
   if (ev.type == SDL_KEYUP) {
+
     if ((ev.key.keysym.sym == SDLK_UP || ev.key.keysym.sym == SDLK_w) && m_dollySpeed > 0) {
       m_dollySpeed = 0.0f;
+    }
+    if ((ev.key.keysym.sym == SDLK_UP || ev.key.keysym.sym == SDLK_w)) {
       m_carModel.resetAction(Action::Forward);
     }
+
+
     if ((ev.key.keysym.sym == SDLK_DOWN || ev.key.keysym.sym == SDLK_s) && m_dollySpeed < 0) {
       m_dollySpeed = 0.0f;
+    }
+    if ((ev.key.keysym.sym == SDLK_DOWN || ev.key.keysym.sym == SDLK_s)) {
       m_carModel.resetAction(Action::Backward);
     }
+
+
     if ((ev.key.keysym.sym == SDLK_LEFT || ev.key.keysym.sym == SDLK_a) && m_panSpeed < 0) {
       m_panSpeed = 0.0f;
+    }
+    if ((ev.key.keysym.sym == SDLK_LEFT || ev.key.keysym.sym == SDLK_a)) {
       m_carModel.resetAction(Action::Left);
     }
+
     if ((ev.key.keysym.sym == SDLK_RIGHT || ev.key.keysym.sym == SDLK_d) && m_panSpeed > 0) {
       m_panSpeed = 0.0f;
+    }
+    if ((ev.key.keysym.sym == SDLK_RIGHT || ev.key.keysym.sym == SDLK_d)) {
       m_carModel.resetAction(Action::Right);
     }
+
+
     if (ev.key.keysym.sym == SDLK_q && m_truckSpeed < 0) m_truckSpeed = 0.0f;
     if (ev.key.keysym.sym == SDLK_e && m_truckSpeed > 0) m_truckSpeed = 0.0f;
   }
@@ -84,6 +99,8 @@ void OpenGLWindow::loadModel(std::string objectPath, std::string texturePath, Mo
 
 void OpenGLWindow::paintGL() {
   update();
+  float deltaTime{static_cast<float>(getDeltaTime())};
+  m_carModel.update(deltaTime);
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glViewport(0, 0, m_viewportWidth, m_viewportHeight);
