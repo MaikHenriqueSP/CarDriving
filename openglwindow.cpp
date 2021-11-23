@@ -20,11 +20,11 @@ void OpenGLWindow::handleEvent(SDL_Event& ev) {
       m_carModel.setAction(Action::Backward);
     }
     if (ev.key.keysym.sym == SDLK_LEFT || ev.key.keysym.sym == SDLK_a) {
-      m_panSpeed = -1.0f;
+      // m_panSpeed = -1.0f;
       m_carModel.setAction(Action::Left);
     }
     if (ev.key.keysym.sym == SDLK_RIGHT || ev.key.keysym.sym == SDLK_d) {
-      m_panSpeed = 1.0f;
+      // m_panSpeed = 1.0f;
       m_carModel.setAction(Action::Right);
     }
     if (ev.key.keysym.sym == SDLK_q) m_truckSpeed = -1.0f;
