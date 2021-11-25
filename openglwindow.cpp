@@ -88,7 +88,7 @@ void OpenGLWindow::initializeGL() {
   m_roadModel.m_modelMatrix = glm::rotate(m_roadModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
   m_roadModel.m_modelMatrix = glm::scale(m_roadModel.m_modelMatrix, glm::vec3(20.0f, 1.0f, 20.0f));
   resizeGL(getWindowSettings().width, getWindowSettings().height);
-
+  m_camera.setVehicle(&m_carModel);
 }
 
 void OpenGLWindow::loadModel(std::string objectPath, std::string texturePath, Model* model) {
@@ -406,7 +406,7 @@ void OpenGLWindow::terminateGL() {
 
 void OpenGLWindow::update() {
   float deltaTime{static_cast<float>(getDeltaTime())};
-  m_camera.dolly(m_dollySpeed * deltaTime);
+  m_camera.dolly();
   m_camera.truck(m_truckSpeed * deltaTime);
   m_camera.pan(m_panSpeed * deltaTime);
 }

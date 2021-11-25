@@ -3,7 +3,8 @@
 
 void Vehicle::update(float deltaTime) {
     float rotateFactor = 0.0f;
-    // fmt::print("x={} | z={}\n", m_forward.x, m_forward.z);
+    m_speed = 0.0f;
+
     if (m_actionData.m_input[static_cast<size_t>(Action::Left)]) {
         rotateFactor += 30.0f * deltaTime ;
     }
@@ -13,14 +14,16 @@ void Vehicle::update(float deltaTime) {
     }
 
     if (m_actionData.m_input[static_cast<size_t>(Action::Forward)]) {
+        m_speed = 2.0f * deltaTime;
         updateDirection(rotateFactor);
-        m_position += m_forward * m_speed * deltaTime;
+        m_position += m_forward * m_speed;
     } 
     
     if (m_actionData.m_input[static_cast<size_t>(Action::Backward)]) {
         rotateFactor *= -1.0f;
+        m_speed = - 2.0f * deltaTime;
         updateDirection(rotateFactor);
-        m_position += m_forward * m_speed * deltaTime * (-1.0f);
+        m_position += m_forward * m_speed;
     }
     m_modelMatrix = glm::translate(glm::mat4{1.0f}, m_position);
     m_modelMatrix = glm::rotate(m_modelMatrix, glm::radians(m_rotationAngle), glm::vec3(0, 1, 0));    
@@ -41,7 +44,14 @@ void Vehicle::updateDirection(float rotateFactor) {
     float x = m_forward.x;
     float z = m_forward.z;
 
-    m_forward.z = z * glm::cos(glm::radians(rotateFactor)) - x *  glm::sin(glm::radians(rotateFactor)) ;
-    m_forward.x = z * glm::sin(glm::radians(rotateFactor)) + x *  glm::cos(glm::radians(rotateFactor)) ;
+    m_forward.z = z * glm::cos(glm::radians(rotateFactor)) - x *  glm::sin(glm::radians(rotateFactor));
+    m_forward.x = z * glm::sin(glm::radians(rotateFactor)) + x *  glm::cos(glm::radians(rotateFactor));
+}
 
+float Vehicle::getSpeed() {
+    return m_speed;
+}
+
+glm::vec3 Vehicle::getPosition() {
+    return m_position;
 }

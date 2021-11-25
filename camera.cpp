@@ -12,11 +12,13 @@ void Camera::computeViewMatrix() {
   m_viewMatrix = glm::lookAt(m_eye, m_at, m_up);
 }
 
-void Camera::dolly(float speed) { //move no eixo z
+void Camera::dolly() { //move no eixo z
   // Compute forward vector (view direction)
-  glm::vec3 forward = glm::normalize(m_at - m_eye);
+  auto vpos = m_vehicle->getPosition();
+  auto m_atl = glm::vec3(vpos.x, m_at.y, vpos.z);
+  glm::vec3 forward = glm::normalize(m_atl - m_eye);
 
-  // Move eye and center forward (speed > 0) or backward (speed < 0)
+  auto speed = m_vehicle->getSpeed();
   m_eye += forward * speed;
   m_at += forward * speed;
 
@@ -47,4 +49,7 @@ void Camera::pan(float speed) { //girar no eixo y
   m_at = transform * glm::vec4(m_at, 1.0f);
 
   computeViewMatrix();
+}
+void Camera::setVehicle(Vehicle* vehicle) {
+  m_vehicle = vehicle;
 }

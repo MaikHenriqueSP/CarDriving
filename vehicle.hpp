@@ -9,8 +9,10 @@ class Vehicle : public Model {
         void update(float deltaTime);
         void setAction(Action action);
         void resetAction(Action action);
+        float getSpeed();
+        glm::vec3 getPosition();
     private:
-        float m_speed{1.0f};
+        float m_speed{0.0f};
         glm::vec3 m_forward{0.0f, 0.0f, -1.0f};
         glm::vec3 m_position{0.0f, 0.0f, -0.5f};
         ActionData m_actionData;
