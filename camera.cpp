@@ -23,7 +23,10 @@ void Camera::dolly() { //move no eixo z
   auto eye_target = m_vehicle->getForward() * -1.0f;
   auto speed = m_vehicle->getSpeed();
 
-  m_eye = glm::vec3(m_at.x + eye_target.x * 3.5f, m_eye.y, m_at.z + eye_target.z * 3.5f);
+  auto eyeTargetPosition = glm::vec3(m_at.x + eye_target.x * 2.5f, m_eye.y, m_at.z + eye_target.z * 2.5f);
+  glm::vec3 eyeForward = glm::normalize(eyeTargetPosition - m_eye);
+
+  m_eye += eyeForward * speed;
   m_at += forward * speed;
 
   computeViewMatrix();
