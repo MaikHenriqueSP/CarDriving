@@ -74,7 +74,6 @@ void OpenGLWindow::initializeGL() {
   m_program = createProgramFromFile(path + ".vert", path + ".frag");
 
   loadModel("formula_1_mesh.obj", "maps/formula1_DefaultMaterial_Diffuse.png", &m_carModel);
-  m_mappingMode = 3;  // "From mesh" option
   m_carModel.m_modelMatrix = glm::translate(m_carModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, -0.5f));
   m_carModel.m_modelMatrix = glm::rotate(m_carModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
 
@@ -110,13 +109,11 @@ void OpenGLWindow::paintGL() {
   GLint IdLoc{glGetUniformLocation(m_program, "Id")};
   GLint IsLoc{glGetUniformLocation(m_program, "Is")};
   GLint diffuseTexLoc{glGetUniformLocation(m_program, "diffuseTex")};
-  GLint mappingModeLoc{glGetUniformLocation(m_program, "mappingMode")};
 
   // Set uniform variables used by every scene object
   glUniformMatrix4fv(viewMatrixLoc, 1, GL_FALSE, &m_camera.m_viewMatrix[0][0]);
   glUniformMatrix4fv(projMatrixLoc, 1, GL_FALSE, &m_camera.m_projMatrix[0][0]);
   glUniform1i(diffuseTexLoc, 0);
-  glUniform1i(mappingModeLoc, m_mappingMode);
 
   // auto lightDirRotated{m_trackBallLight.getRotation() * m_lightDir}; || ILIMUMINAÇÃ
   auto lightDirRotated{m_lightDir};

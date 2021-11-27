@@ -27,16 +27,10 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   int m_trianglesToDraw{};
 
   float m_zoom{};
-
-  // Shaders
+  
   const char* m_shaderName{"texture"};
   GLuint m_program;
   
-
-  // Mapping mode
-  // 0: triplanar; 1: cylindrical; 2: spherical; 3: from mesh
-  int m_mappingMode{};
-
   // Light and material properties
   glm::vec4 m_lightDir{-1.0f, -1.0f, -1.0f, 0.0f};
   glm::vec4 m_Ia{1.0f};
