@@ -1,25 +1,29 @@
 #include "camera.hpp"
-
+#include <fmt/core.h>
 #include <glm/gtc/matrix_transform.hpp>
+
+void Camera::initialize() {
+  m_at = m_vehicle->getPosition();
+  m_at.y = m_eye.y;
+}
 
 void Camera::computeProjectionMatrix(int width, int height) {
   m_projMatrix = glm::mat4(1.0f);
   auto aspect{static_cast<float>(width) / static_cast<float>(height)};
-  m_projMatrix = glm::perspective(glm::radians(70.0f), aspect, 0.1f, 5.0f);
+  m_projMatrix = glm::perspective(glm::radians(90.0f), aspect, 0.1f, 5.0f);
 }
 
 void Camera::computeViewMatrix() {
   m_viewMatrix = glm::lookAt(m_eye, m_at, m_up);
 }
 
-void Camera::dolly() { //move no eixo z
-  // Compute forward vector (view direction)
-  auto vpos = m_vehicle->getPosition();
-  auto m_atl = glm::vec3(vpos.x, m_at.y, vpos.z);
-  glm::vec3 forward = glm::normalize(m_atl - m_eye);
-
+void Camera::dolly() { //move no eixo z  
+  glm::vec3 forward = glm::normalize(m_at - m_eye);
+  
+  auto eye_target = m_vehicle->getForward() * -1.0f;
   auto speed = m_vehicle->getSpeed();
-  m_eye += forward * speed;
+
+  m_eye = glm::vec3(m_at.x + eye_target.x * 3.5f, m_eye.y, m_at.z + eye_target.z * 3.5f);
   m_at += forward * speed;
 
   computeViewMatrix();
@@ -38,18 +42,20 @@ void Camera::truck(float speed) { //dir e esq
   computeViewMatrix();
 }
 
+
 void Camera::pan(float speed) { //girar no eixo y
   glm::mat4 transform{glm::mat4(1.0f)};
 
   // Rotate camera around its local y axis
   transform = glm::translate(transform, m_eye);
-  transform = glm::rotate(transform, -speed, m_up);
+  transform = glm::rotate(transform, glm::radians(m_vehicle->getRotationFactor(speed)), m_up);
   transform = glm::translate(transform, -m_eye);
 
-  m_at = transform * glm::vec4(m_at, 1.0f);
+  m_at = transform * glm::vec4(m_vehicle->getPosition().x,m_at.y, m_vehicle->getPosition().z, 1.0f);  
 
   computeViewMatrix();
 }
+
 void Camera::setVehicle(Vehicle* vehicle) {
   m_vehicle = vehicle;
 }

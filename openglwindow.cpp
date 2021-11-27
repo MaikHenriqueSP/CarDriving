@@ -7,8 +7,6 @@
 
 #include "imfilebrowser.h"
 
-
-
 void OpenGLWindow::handleEvent(SDL_Event& ev) {
   if (ev.type == SDL_KEYDOWN) {
     if (ev.key.keysym.sym == SDLK_UP || ev.key.keysym.sym == SDLK_w) {
@@ -20,11 +18,11 @@ void OpenGLWindow::handleEvent(SDL_Event& ev) {
       m_carModel.setAction(Action::Backward);
     }
     if (ev.key.keysym.sym == SDLK_LEFT || ev.key.keysym.sym == SDLK_a) {
-      // m_panSpeed = -1.0f;
+      m_panSpeed = -2.0f;
       m_carModel.setAction(Action::Left);
     }
     if (ev.key.keysym.sym == SDLK_RIGHT || ev.key.keysym.sym == SDLK_d) {
-      // m_panSpeed = 1.0f;
+      m_panSpeed = 2.0f;
       m_carModel.setAction(Action::Right);
     }
     if (ev.key.keysym.sym == SDLK_q) m_truckSpeed = -1.0f;
@@ -89,6 +87,7 @@ void OpenGLWindow::initializeGL() {
   m_roadModel.m_modelMatrix = glm::scale(m_roadModel.m_modelMatrix, glm::vec3(20.0f, 1.0f, 20.0f));
   resizeGL(getWindowSettings().width, getWindowSettings().height);
   m_camera.setVehicle(&m_carModel);
+  m_camera.initialize();
 }
 
 void OpenGLWindow::loadModel(std::string objectPath, std::string texturePath, Model* model) {
@@ -406,7 +405,7 @@ void OpenGLWindow::terminateGL() {
 
 void OpenGLWindow::update() {
   float deltaTime{static_cast<float>(getDeltaTime())};
+  m_camera.pan(deltaTime);
   m_camera.dolly();
   m_camera.truck(m_truckSpeed * deltaTime);
-  m_camera.pan(m_panSpeed * deltaTime);
 }
