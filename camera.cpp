@@ -10,14 +10,14 @@ void Camera::initialize() {
 void Camera::computeProjectionMatrix(int width, int height) {
   m_projMatrix = glm::mat4(1.0f);
   auto aspect{static_cast<float>(width) / static_cast<float>(height)};
-  m_projMatrix = glm::perspective(glm::radians(90.0f), aspect, 0.1f, 5.0f);
+  m_projMatrix = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 100.0f);
 }
 
 void Camera::computeViewMatrix() {
   m_viewMatrix = glm::lookAt(m_eye, m_at, m_up);
 }
 
-void Camera::dolly() { //move no eixo z  
+void Camera::dolly() {
   glm::vec3 forward = glm::normalize(m_at - m_eye);
   
   auto eye_target = m_vehicle->getForward() * -1.0f;

@@ -115,6 +115,7 @@ void OpenGLWindow::paintGL() {
   glUniformMatrix4fv(projMatrixLoc, 1, GL_FALSE, &m_camera.m_projMatrix[0][0]);
   glUniform1i(diffuseTexLoc, 0);
 
+
   // auto lightDirRotated{m_trackBallLight.getRotation() * m_lightDir}; || ILIMUMINAÇÃ
   auto lightDirRotated{m_lightDir};
   glUniform4fv(lightDirLoc, 1, &lightDirRotated.x);
@@ -162,10 +163,6 @@ void OpenGLWindow::paintUI() {
   fileDialogModel.SetPwd(getAssetsPath());
   fileDialogTex.SetPwd(getAssetsPath() + "/maps");
 #endif
-  auto aspect{static_cast<float>(m_viewportWidth) / static_cast<float>(m_viewportHeight)};
-  m_camera.m_projMatrix =
-            glm::perspective(glm::radians(45.0f), aspect, 0.1f, 5.0f);
-
   
   auto widgetSize{ImVec2(222, 244)};
   ImGui::SetNextWindowPos(ImVec2(m_viewportWidth - widgetSize.x - 5,
