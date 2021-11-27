@@ -29,10 +29,9 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   float m_zoom{};
 
   // Shaders
-  std::vector<const char*> m_shaderNames{"texture", "blinnphong", "phong",
-                                         "gouraud", "normal",     "depth"};
-  std::vector<GLuint> m_programs;
-  int m_currentProgramIndex{};
+  const char* m_shaderName{"texture"};
+  GLuint m_program;
+  
 
   // Mapping mode
   // 0: triplanar; 1: cylindrical; 2: spherical; 3: from mesh
