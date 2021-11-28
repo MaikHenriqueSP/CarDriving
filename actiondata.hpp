@@ -6,7 +6,7 @@
 enum class Action { Right, Left, Forward, Backward };
 
 struct ActionData {
-  std::bitset<5> m_input;  
+  std::bitset<4> m_input;  
 };
 
 #endif

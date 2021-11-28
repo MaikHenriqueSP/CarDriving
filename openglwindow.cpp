@@ -8,84 +8,53 @@
 #include "imfilebrowser.h"
 
 void OpenGLWindow::handleEvent(SDL_Event& ev) {
-  if (ev.type == SDL_KEYDOWN) {
-    if (ev.key.keysym.sym == SDLK_UP || ev.key.keysym.sym == SDLK_w) {
-      // m_dollySpeed = 1.0f;
-      m_carModel.setAction(Action::Forward);
-    }
-    if (ev.key.keysym.sym == SDLK_DOWN || ev.key.keysym.sym == SDLK_s) {
-      // m_dollySpeed = -1.0f;
-      m_carModel.setAction(Action::Backward);
-    }
-    if (ev.key.keysym.sym == SDLK_LEFT || ev.key.keysym.sym == SDLK_a) {
-      m_panSpeed = -2.0f;
-      m_carModel.setAction(Action::Left);
-    }
-    if (ev.key.keysym.sym == SDLK_RIGHT || ev.key.keysym.sym == SDLK_d) {
-      m_panSpeed = 2.0f;
-      m_carModel.setAction(Action::Right);
-    }
-    if (ev.key.keysym.sym == SDLK_q) m_truckSpeed = -1.0f;
-    if (ev.key.keysym.sym == SDLK_e) m_truckSpeed = 1.0f;
-  }
-  if (ev.type == SDL_KEYUP) {
-
-    if ((ev.key.keysym.sym == SDLK_UP || ev.key.keysym.sym == SDLK_w) && m_dollySpeed > 0) {
-      m_dollySpeed = 0.0f;
-    }
-    if ((ev.key.keysym.sym == SDLK_UP || ev.key.keysym.sym == SDLK_w)) {
-      m_carModel.resetAction(Action::Forward);
-    }
-
-
-    if ((ev.key.keysym.sym == SDLK_DOWN || ev.key.keysym.sym == SDLK_s) && m_dollySpeed < 0) {
-      m_dollySpeed = 0.0f;
-    }
-    if ((ev.key.keysym.sym == SDLK_DOWN || ev.key.keysym.sym == SDLK_s)) {
-      m_carModel.resetAction(Action::Backward);
-    }
-
-
-    if ((ev.key.keysym.sym == SDLK_LEFT || ev.key.keysym.sym == SDLK_a) && m_panSpeed < 0) {
-      m_panSpeed = 0.0f;
-    }
-    if ((ev.key.keysym.sym == SDLK_LEFT || ev.key.keysym.sym == SDLK_a)) {
-      m_carModel.resetAction(Action::Left);
-    }
-
-    if ((ev.key.keysym.sym == SDLK_RIGHT || ev.key.keysym.sym == SDLK_d) && m_panSpeed > 0) {
-      m_panSpeed = 0.0f;
-    }
-    if ((ev.key.keysym.sym == SDLK_RIGHT || ev.key.keysym.sym == SDLK_d)) {
-      m_carModel.resetAction(Action::Right);
-    }
-
-
-    if (ev.key.keysym.sym == SDLK_q && m_truckSpeed < 0) m_truckSpeed = 0.0f;
-    if (ev.key.keysym.sym == SDLK_e && m_truckSpeed > 0) m_truckSpeed = 0.0f;
+  switch (ev.key.keysym.sym) {
+    case SDLK_UP:
+    case SDLK_w:
+      m_carModel.updateAction(ev.type, Action::Forward);
+      break;
+    case SDLK_DOWN:
+    case SDLK_s:
+      m_carModel.updateAction(ev.type, Action::Backward);
+      break;
+    case SDLK_LEFT:
+    case SDLK_a:
+      m_carModel.updateAction(ev.type, Action::Left);
+      break;
+    case SDLK_RIGHT:
+    case SDLK_d:
+      m_carModel.updateAction(ev.type, Action::Right);
+      break;
   }
 }
 
 void OpenGLWindow::initializeGL() {
   glClearColor(0, 0, 0, 1);
   glEnable(GL_DEPTH_TEST);
-  
+
   auto path{getAssetsPath() + "shaders/" + m_shaderName};
   m_program = createProgramFromFile(path + ".vert", path + ".frag");
 
-  loadModel("formula_1_mesh.obj", "maps/formula1_DefaultMaterial_Diffuse.png", &m_carModel);
-  m_carModel.m_modelMatrix = glm::translate(m_carModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, -0.5f));
-  m_carModel.m_modelMatrix = glm::rotate(m_carModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+  loadModel("formula_1_mesh.obj", "maps/formula1_DefaultMaterial_Diffuse.png",
+            &m_carModel);
+  m_carModel.m_modelMatrix =
+      glm::translate(m_carModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, -0.5f));
+  m_carModel.m_modelMatrix = glm::rotate(
+      m_carModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
 
   loadModel("road.obj", "maps/road.jpg", &m_roadModel);
-  m_roadModel.m_modelMatrix = glm::translate(m_roadModel.m_modelMatrix, glm::vec3(0.0f, -0.25f, -1.0f));
-  m_roadModel.m_modelMatrix = glm::rotate(m_roadModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
-  m_roadModel.m_modelMatrix = glm::scale(m_roadModel.m_modelMatrix, glm::vec3(20.0f, 1.0f, 20.0f));
+  m_roadModel.m_modelMatrix =
+      glm::translate(m_roadModel.m_modelMatrix, glm::vec3(0.0f, -0.25f, -1.0f));
+  m_roadModel.m_modelMatrix = glm::rotate(
+      m_roadModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+  m_roadModel.m_modelMatrix =
+      glm::scale(m_roadModel.m_modelMatrix, glm::vec3(20.0f, 1.0f, 20.0f));
   resizeGL(getWindowSettings().width, getWindowSettings().height);
   m_camera.initialize(&m_carModel);
 }
 
-void OpenGLWindow::loadModel(std::string objectPath, std::string texturePath, Model* model) {
+void OpenGLWindow::loadModel(std::string objectPath, std::string texturePath,
+                             Model* model) {
   model->loadDiffuseTexture(getAssetsPath() + texturePath);
   model->loadFromFile(getAssetsPath() + objectPath);
   model->setupVAO(m_program);
@@ -116,7 +85,7 @@ void OpenGLWindow::paintGL() {
 
   auto lightDirRotated{m_lightDir};
   glUniform4fv(lightDirLoc, 1, &lightDirRotated.x);
- 
+
   glUniform4fv(IaLoc, 1, &m_Ia.x);
   glUniform4fv(IdLoc, 1, &m_Id.x);
   glUniform4fv(IsLoc, 1, &m_Is.x);
@@ -137,14 +106,15 @@ void OpenGLWindow::configureModel(Model* model) {
   auto KsLoc{glGetUniformLocation(program, "Ks")};
 
   glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model->m_modelMatrix[0][0]);
-  auto modelViewMatrixRoad{glm::mat3(m_camera.m_viewMatrix * model->m_modelMatrix)};
+  auto modelViewMatrixRoad{
+      glm::mat3(m_camera.m_viewMatrix * model->m_modelMatrix)};
   glm::mat3 normalMatrixRoad{glm::inverseTranspose(modelViewMatrixRoad)};
   glUniformMatrix3fv(normalMatrixLoc, 1, GL_FALSE, &normalMatrixRoad[0][0]);
 
   auto modelKa = model->getKa();
   auto modelKd = model->getKd();
   auto modelKs = model->getKs();
-  
+
   glUniform1f(shininessLoc, model->getShininess());
   glUniform4fv(KaLoc, 1, &modelKa.x);
   glUniform4fv(KdLoc, 1, &modelKd.x);
@@ -160,7 +130,7 @@ void OpenGLWindow::paintUI() {
   fileDialogModel.SetPwd(getAssetsPath());
   fileDialogTex.SetPwd(getAssetsPath() + "/maps");
 #endif
-  
+
   auto widgetSize{ImVec2(222, 244)};
   ImGui::SetNextWindowPos(ImVec2(m_viewportWidth - widgetSize.x - 5,
                                  m_viewportHeight - widgetSize.y - 5));
@@ -195,13 +165,10 @@ void OpenGLWindow::resizeGL(int width, int height) {
   m_camera.computeProjectionMatrix(width, height);
 }
 
-void OpenGLWindow::terminateGL() {
-  glDeleteProgram(m_program);
-}
+void OpenGLWindow::terminateGL() { glDeleteProgram(m_program); }
 
 void OpenGLWindow::update() {
   float deltaTime{static_cast<float>(getDeltaTime())};
   m_camera.dolly();
   m_camera.pan(deltaTime);
-  m_camera.truck(m_truckSpeed * deltaTime);
 }

@@ -1,7 +1,5 @@
 #include "vehicle.hpp"
 
-#include <fmt/core.h>
-
 void Vehicle::update(float deltaTime) {
   float rotateFactor = getRotationFactor(deltaTime);
   updateSpeed(deltaTime);
@@ -14,12 +12,14 @@ void Vehicle::update(float deltaTime) {
                               glm::vec3(0, 1, 0));
 }
 
-void Vehicle::setAction(Action action) {
-  m_actionData.m_input.set(static_cast<size_t>(action));
-}
+void Vehicle::updateAction(Uint32 eventType, Action action) {
+  if (eventType == SDL_KEYDOWN) {
+    m_actionData.m_input.set(static_cast<size_t>(action));
+  }
 
-void Vehicle::resetAction(Action action) {
-  m_actionData.m_input.reset(static_cast<size_t>(action));
+  if (eventType == SDL_KEYUP) {
+    m_actionData.m_input.reset(static_cast<size_t>(action));
+  }
 }
 
 void Vehicle::updateDirection(float rotateFactor) {

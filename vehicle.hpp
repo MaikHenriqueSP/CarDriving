@@ -7,13 +7,11 @@
 class Vehicle : public Model {
  public:
   void update(float deltaTime);
-  void setAction(Action action);
-  void resetAction(Action action);
   float getSpeed();
   glm::vec3 getPosition();
   float getRotationFactor(float deltaTime);
   glm::vec3 getForward();
-
+  void updateAction(Uint32 eventType, Action action);
  private:
   float m_speed{0.0f};
   glm::vec3 m_forward{0.0f, 0.0f, -1.0f};
