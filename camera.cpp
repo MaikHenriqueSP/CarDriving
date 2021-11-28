@@ -1,5 +1,7 @@
 #include "camera.hpp"
+
 #include <fmt/core.h>
+
 #include <glm/gtc/matrix_transform.hpp>
 
 void Camera::initialize() {
@@ -17,7 +19,7 @@ void Camera::computeViewMatrix() {
   m_viewMatrix = glm::lookAt(m_eye, m_at, m_up);
 }
 
-void Camera::dolly() {  
+void Camera::dolly() {
   auto counterForward = m_vehicle->getForward() * -1.0f;
   auto speed = m_vehicle->getSpeed();
 
@@ -37,7 +39,7 @@ void Camera::dolly() {
   computeViewMatrix();
 }
 
-void Camera::truck(float speed) { //dir e esq
+void Camera::truck(float speed) {  // dir e esq
   // Compute forward vector (view direction)
   glm::vec3 forward = glm::normalize(m_at - m_eye);
   // Compute vector to the left
@@ -50,20 +52,18 @@ void Camera::truck(float speed) { //dir e esq
   computeViewMatrix();
 }
 
-
-void Camera::pan(float speed) { //girar no eixo y
+void Camera::pan(float deltaTime) {
   glm::mat4 transform{glm::mat4(1.0f)};
 
-  // Rotate camera around its local y axis
   transform = glm::translate(transform, m_eye);
-  transform = glm::rotate(transform, glm::radians(m_vehicle->getRotationFactor(speed)), m_up);
+  transform = glm::rotate(
+      transform, glm::radians(m_vehicle->getRotationFactor(deltaTime)), m_up);
   transform = glm::translate(transform, -m_eye);
 
-  m_at = transform * glm::vec4(m_vehicle->getPosition().x,m_at.y, m_vehicle->getPosition().z, 1.0f);  
+  m_at = transform * glm::vec4(m_vehicle->getPosition().x, m_at.y,
+                               m_vehicle->getPosition().z, 1.0f);
 
   computeViewMatrix();
 }
 
-void Camera::setVehicle(Vehicle* vehicle) {
-  m_vehicle = vehicle;
-}
+void Camera::setVehicle(Vehicle* vehicle) { m_vehicle = vehicle; }
