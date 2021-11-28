@@ -5,8 +5,6 @@
 #include <cppitertools/itertools.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
 
-#include "imfilebrowser.h"
-
 void OpenGLWindow::handleEvent(SDL_Event& ev) {
   switch (ev.key.keysym.sym) {
     case SDLK_UP:
