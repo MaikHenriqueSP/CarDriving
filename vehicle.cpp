@@ -2,30 +2,11 @@
 #include <fmt/core.h>
 
 void Vehicle::update(float deltaTime) {
-    float rotateFactor = 0.0f;
-    m_speed = 0.0f;
+    float rotateFactor = getRotationFactor(deltaTime);
+    updateSpeed(deltaTime);
 
-    if (m_actionData.m_input[static_cast<size_t>(Action::Left)]) {
-        rotateFactor += 30.0f * deltaTime ;
-    }
-
-    if (m_actionData.m_input[static_cast<size_t>(Action::Right)]) {
-        rotateFactor -= 30.0f * deltaTime ;
-    }
-
-    if (m_actionData.m_input[static_cast<size_t>(Action::Forward)]) {
-        m_speed = 2.0f * deltaTime;
-        m_speed = 2.0f * deltaTime;
-        updateDirection(rotateFactor);
-        m_position += m_forward * m_speed;
-    } 
-    
-    if (m_actionData.m_input[static_cast<size_t>(Action::Backward)]) {
-        rotateFactor *= -1.0f;
-        m_speed = - 2.0f * deltaTime;
-        updateDirection(rotateFactor);
-        m_position += m_forward * m_speed;
-    }
+    updateDirection(rotateFactor);
+    m_position += m_forward * m_speed;
 
     m_modelMatrix = glm::translate(glm::mat4{1.0f}, m_position);
     m_modelMatrix = glm::rotate(m_modelMatrix, glm::radians(m_rotationAngle), glm::vec3(0, 1, 0));    
@@ -76,11 +57,25 @@ float Vehicle::getRotationFactor(float deltaTime) {
     return rotateFactor;
 }
 
-float Vehicle::getRotationAngle() {
-    return m_rotationAngle;
+void Vehicle::updateSpeed(float deltaTime) {
+    m_speed = 0.0f;
+
+    if (m_actionData.m_input[static_cast<size_t>(Action::Forward)] && m_actionData.m_input[static_cast<size_t>(Action::Backward)]) {
+        return;
+    }
+
+    if (m_actionData.m_input[static_cast<size_t>(Action::Forward)]) {
+        m_speed = 2.0f * deltaTime;     
+    }
+    
+    if (m_actionData.m_input[static_cast<size_t>(Action::Backward)]) {
+        m_speed = - 2.0f * deltaTime;
+    }
 }
 
 glm::vec3 Vehicle::getForward() {
     return m_forward;
 }
+
+
 

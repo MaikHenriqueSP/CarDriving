@@ -11,8 +11,7 @@ class Vehicle : public Model {
         void resetAction(Action action);
         float getSpeed();
         glm::vec3 getPosition();
-        float getRotationFactor(float delt);
-        float getRotationAngle();
+        float getRotationFactor(float deltaTime);
         glm::vec3 getForward();
 
     private:
@@ -22,6 +21,7 @@ class Vehicle : public Model {
         ActionData m_actionData;
         float m_rotationAngle{-90.0f};
         void updateDirection(float rotateFactor);
+        void updateSpeed(float deltaTime);
 };
 
 #endif
