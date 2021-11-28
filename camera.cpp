@@ -17,17 +17,22 @@ void Camera::computeViewMatrix() {
   m_viewMatrix = glm::lookAt(m_eye, m_at, m_up);
 }
 
-void Camera::dolly() {
-  glm::vec3 forward = glm::normalize(m_at - m_eye);
-  
-  auto eye_target = m_vehicle->getForward() * -1.0f;
+void Camera::dolly() {  
+  auto counterForward = m_vehicle->getForward() * -1.0f;
   auto speed = m_vehicle->getSpeed();
 
-  auto eyeTargetPosition = glm::vec3(m_at.x + eye_target.x * 2.5f, m_eye.y, m_at.z + eye_target.z * 2.5f);
-  glm::vec3 eyeForward = glm::normalize(eyeTargetPosition - m_eye);
+  float direction = speed != 0 ? (speed / glm::abs(speed)) : 0;
+
+  float xTarget = m_at.x + counterForward.x * 2.5f * direction;
+  float zTarget = m_at.z + counterForward.z * 2.5f * direction;
+
+  auto eyeTargetPosition = glm::vec3(xTarget, m_eye.y, zTarget);
+  auto eyeForward = glm::normalize(eyeTargetPosition - m_eye) * direction;
+
+  glm::vec3 atForward = glm::normalize(m_at - m_eye);
 
   m_eye += eyeForward * speed;
-  m_at += forward * speed;
+  m_at += atForward * speed;
 
   computeViewMatrix();
 }

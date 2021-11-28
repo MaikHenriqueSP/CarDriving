@@ -15,6 +15,7 @@ void Vehicle::update(float deltaTime) {
 
     if (m_actionData.m_input[static_cast<size_t>(Action::Forward)]) {
         m_speed = 2.0f * deltaTime;
+        m_speed = 2.0f * deltaTime;
         updateDirection(rotateFactor);
         m_position += m_forward * m_speed;
     } 
@@ -47,7 +48,6 @@ void Vehicle::updateDirection(float rotateFactor) {
 
     m_forward.z = z * glm::cos(glm::radians(rotateFactor)) - x *  glm::sin(glm::radians(rotateFactor));
     m_forward.x = z * glm::sin(glm::radians(rotateFactor)) + x *  glm::cos(glm::radians(rotateFactor));
-    // fmt::print("{} - {}\n", m_forward.x, m_forward.z);
 }
 
 float Vehicle::getSpeed() {
@@ -59,7 +59,7 @@ glm::vec3 Vehicle::getPosition() {
 }
 
 float Vehicle::getRotationFactor(float deltaTime) {
-        float rotateFactor = 0.0f;
+    float rotateFactor = 0.0f;
 
     if (!m_actionData.m_input[static_cast<size_t>(Action::Forward)] && !m_actionData.m_input[static_cast<size_t>(Action::Backward)]) {
         return 0.0f;
@@ -72,6 +72,7 @@ float Vehicle::getRotationFactor(float deltaTime) {
     if (m_actionData.m_input[static_cast<size_t>(Action::Right)]) {
         rotateFactor -=30.0f * deltaTime ;
     }
+
     return rotateFactor;
 }
 
@@ -82,3 +83,4 @@ float Vehicle::getRotationAngle() {
 glm::vec3 Vehicle::getForward() {
     return m_forward;
 }
+

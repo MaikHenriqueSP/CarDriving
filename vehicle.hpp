@@ -21,9 +21,7 @@ class Vehicle : public Model {
         glm::vec3 m_position{0.0f, 0.0f, -0.5f};
         ActionData m_actionData;
         float m_rotationAngle{-90.0f};
-        float m_rotationFactor{0.0f};
         void updateDirection(float rotateFactor);
-
 };
 
 #endif

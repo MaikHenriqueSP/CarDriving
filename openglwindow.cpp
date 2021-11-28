@@ -115,8 +115,6 @@ void OpenGLWindow::paintGL() {
   glUniformMatrix4fv(projMatrixLoc, 1, GL_FALSE, &m_camera.m_projMatrix[0][0]);
   glUniform1i(diffuseTexLoc, 0);
 
-
-  // auto lightDirRotated{m_trackBallLight.getRotation() * m_lightDir}; || ILIMUMINAÇÃ
   auto lightDirRotated{m_lightDir};
   glUniform4fv(lightDirLoc, 1, &lightDirRotated.x);
  
@@ -204,7 +202,7 @@ void OpenGLWindow::terminateGL() {
 
 void OpenGLWindow::update() {
   float deltaTime{static_cast<float>(getDeltaTime())};
-  m_camera.pan(deltaTime);
   m_camera.dolly();
+  m_camera.pan(deltaTime);
   m_camera.truck(m_truckSpeed * deltaTime);
 }
