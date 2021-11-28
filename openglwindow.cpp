@@ -82,8 +82,7 @@ void OpenGLWindow::initializeGL() {
   m_roadModel.m_modelMatrix = glm::rotate(m_roadModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
   m_roadModel.m_modelMatrix = glm::scale(m_roadModel.m_modelMatrix, glm::vec3(20.0f, 1.0f, 20.0f));
   resizeGL(getWindowSettings().width, getWindowSettings().height);
-  m_camera.setVehicle(&m_carModel);
-  m_camera.initialize();
+  m_camera.initialize(&m_carModel);
 }
 
 void OpenGLWindow::loadModel(std::string objectPath, std::string texturePath, Model* model) {

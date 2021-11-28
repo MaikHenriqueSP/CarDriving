@@ -4,7 +4,8 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-void Camera::initialize() {
+void Camera::initialize(Vehicle* vehicle) {
+  m_vehicle = vehicle;
   m_at = m_vehicle->getPosition();
   m_at.y = m_eye.y;
 }
@@ -39,13 +40,10 @@ void Camera::dolly() {
   computeViewMatrix();
 }
 
-void Camera::truck(float speed) {  // dir e esq
-  // Compute forward vector (view direction)
+void Camera::truck(float speed) {  
   glm::vec3 forward = glm::normalize(m_at - m_eye);
-  // Compute vector to the left
   glm::vec3 left = glm::cross(m_up, forward);
 
-  // Move eye and center to the left (speed < 0) or to the right (speed > 0)
   m_at -= left * speed;
   m_eye -= left * speed;
 
@@ -65,5 +63,3 @@ void Camera::pan(float deltaTime) {
 
   computeViewMatrix();
 }
-
-void Camera::setVehicle(Vehicle* vehicle) { m_vehicle = vehicle; }

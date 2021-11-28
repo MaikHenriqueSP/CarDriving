@@ -11,12 +11,11 @@ class Camera {
  public:
   void computeViewMatrix();
   void computeProjectionMatrix(int width, int height); 
-
   void dolly();
   void truck(float speed);
   void pan(float deltaTime);
-  void setVehicle(Vehicle* vehicle);
-  void initialize();
+  void initialize(Vehicle* vehicle);
+  
  private:
   friend OpenGLWindow;
   void updateDirection(float rotateFactor);
