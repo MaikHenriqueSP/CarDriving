@@ -23,6 +23,10 @@ class OpenGLWindow : public abcg::OpenGLWindow {
 
   Vehicle m_carModel;
   Model m_roadModel;
+  Model m_leftWallModel;
+  Model m_rightWallModel;
+  Model m_frontWallModel;
+  Model m_backWallModel;
 
   int m_trianglesToDraw{};
 
@@ -31,7 +35,6 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   const char* m_shaderName{"texture"};
   GLuint m_program;
   
-  // Light and material properties
   glm::vec4 m_lightDir{-1.0f, -1.0f, -1.0f, 0.0f};
   glm::vec4 m_Ia{1.0f};
   glm::vec4 m_Id{1.0f};

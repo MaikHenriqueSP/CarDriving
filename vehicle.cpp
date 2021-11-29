@@ -66,11 +66,11 @@ void Vehicle::updateSpeed(float deltaTime) {
   }
 
   if (m_actionData.m_input[static_cast<size_t>(Action::Forward)]) {
-    m_speed = 2.0f * deltaTime;
+    m_speed = 5.0f * deltaTime;
   }
 
   if (m_actionData.m_input[static_cast<size_t>(Action::Backward)]) {
-    m_speed = -2.0f * deltaTime;
+    m_speed = -5.0f * deltaTime;
   }
 }
 

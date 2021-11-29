@@ -1,7 +1,6 @@
 #include "openglwindow.hpp"
 
 #include <imgui.h>
-
 #include <cppitertools/itertools.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
 
@@ -23,7 +22,7 @@ void OpenGLWindow::handleEvent(SDL_Event& ev) {
     case SDLK_d:
       m_carModel.updateAction(ev.type, Action::Right);
       break;
-  }
+  }  
 }
 
 void OpenGLWindow::initializeGL() {
@@ -33,20 +32,33 @@ void OpenGLWindow::initializeGL() {
   auto path{getAssetsPath() + "shaders/" + m_shaderName};
   m_program = createProgramFromFile(path + ".vert", path + ".frag");
 
-  loadModel("formula_1_mesh.obj", "maps/formula1_DefaultMaterial_Diffuse.png",
-            &m_carModel);
-  m_carModel.m_modelMatrix =
-      glm::translate(m_carModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, -0.5f));
-  m_carModel.m_modelMatrix = glm::rotate(
-      m_carModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+  loadModel("formula_1_mesh.obj", "maps/formula1_DefaultMaterial_Diffuse.png", &m_carModel);
+  m_carModel.m_modelMatrix =   glm::translate(m_carModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, -0.5f));
+  m_carModel.m_modelMatrix = glm::rotate(m_carModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
 
   loadModel("road.obj", "maps/road.jpg", &m_roadModel);
-  m_roadModel.m_modelMatrix =
-      glm::translate(m_roadModel.m_modelMatrix, glm::vec3(0.0f, -0.25f, -1.0f));
-  m_roadModel.m_modelMatrix = glm::rotate(
-      m_roadModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
-  m_roadModel.m_modelMatrix =
-      glm::scale(m_roadModel.m_modelMatrix, glm::vec3(20.0f, 1.0f, 20.0f));
+  m_roadModel.m_modelMatrix =  glm::translate(m_roadModel.m_modelMatrix, glm::vec3(0.0f, -0.25f, -1.0f));
+  m_roadModel.m_modelMatrix = glm::rotate(m_roadModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+  m_roadModel.m_modelMatrix = glm::scale(m_roadModel.m_modelMatrix, glm::vec3(35.0f, 1.0f, 35.0f));
+
+  loadModel("box.obj", "maps/cube.png", &m_leftWallModel);
+  m_leftWallModel.m_modelMatrix =  glm::translate(m_leftWallModel.m_modelMatrix, glm::vec3(-5.3f, 0.0f, -1.0f));
+  m_leftWallModel.m_modelMatrix = glm::scale(m_leftWallModel.m_modelMatrix, glm::vec3(1.0f, 1.0f, 60.0f));
+
+  loadModel("box.obj", "maps/cube.png", &m_rightWallModel);
+  m_rightWallModel.m_modelMatrix =  glm::translate(m_rightWallModel.m_modelMatrix, glm::vec3(5.3f, 0.0f, -1.0f));
+  m_rightWallModel.m_modelMatrix = glm::scale(m_rightWallModel.m_modelMatrix, glm::vec3(1.0f, 1.0f, 60.0f));
+
+  loadModel("box.obj", "maps/cube.png", &m_frontWallModel);
+  m_frontWallModel.m_modelMatrix =  glm::translate(m_frontWallModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, -37.0f));
+  m_frontWallModel.m_modelMatrix = glm::rotate(m_frontWallModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+  m_frontWallModel.m_modelMatrix = glm::scale(m_frontWallModel.m_modelMatrix, glm::vec3(1.0f, 1.0f, 10.0f));
+
+  loadModel("box.obj", "maps/cube.png", &m_backWallModel);
+  m_backWallModel.m_modelMatrix =  glm::translate(m_backWallModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, 35.1f));
+  m_backWallModel.m_modelMatrix = glm::rotate(m_backWallModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+  m_backWallModel.m_modelMatrix = glm::scale(m_backWallModel.m_modelMatrix, glm::vec3(1.0f, 1.0f, 10.0f));
+
   resizeGL(getWindowSettings().width, getWindowSettings().height);
   m_camera.initialize(&m_carModel);
 }
@@ -90,6 +102,10 @@ void OpenGLWindow::paintGL() {
 
   configureModel(&m_carModel);
   configureModel(&m_roadModel);
+  configureModel(&m_leftWallModel);
+  configureModel(&m_rightWallModel);
+  configureModel(&m_frontWallModel);
+  configureModel(&m_backWallModel);
 
   glUseProgram(0);
 }
