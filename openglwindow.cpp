@@ -43,24 +43,25 @@ void OpenGLWindow::initializeGL() {
   auto wallObjectFile = "box.obj";
   auto wallMapFile = "maps/cube.png";
 
-  loadModel(wallObjectFile, wallMapFile, &m_leftWallModel);
   float leftLimit = -4.75f;
+  float rightLimit = 4.75f;
+  float backwardLimit = -35.7f;
+  float frontLimit = 33.7f;
+  
+  loadModel(wallObjectFile, wallMapFile, &m_leftWallModel);
   m_leftWallModel.m_modelMatrix =  glm::translate(m_leftWallModel.m_modelMatrix, glm::vec3(leftLimit, 0.0f, -1.0f));
   m_leftWallModel.m_modelMatrix = glm::scale(m_leftWallModel.m_modelMatrix, glm::vec3(0.0f, 1.0f, 60.0f));
 
   loadModel(wallObjectFile, wallMapFile, &m_rightWallModel);
-  float rightLimit = 4.75f;
   m_rightWallModel.m_modelMatrix =  glm::translate(m_rightWallModel.m_modelMatrix, glm::vec3(rightLimit, 0.0f, -1.0f));
   m_rightWallModel.m_modelMatrix = glm::scale(m_rightWallModel.m_modelMatrix, glm::vec3(0.0f, 1.0f, 60.0f));
 
   loadModel(wallObjectFile, wallMapFile, &m_frontWallModel);
-  float backwardLimit = -35.7f;
   m_backWallModel.m_modelMatrix =  glm::translate(m_backWallModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, backwardLimit));
   m_backWallModel.m_modelMatrix = glm::rotate(m_backWallModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
   m_backWallModel.m_modelMatrix = glm::scale(m_backWallModel.m_modelMatrix, glm::vec3(0.0f, 1.0f, 10.0f));
 
   loadModel(wallObjectFile, wallMapFile, &m_backWallModel);
-  float frontLimit = 33.7f;
   m_frontWallModel.m_modelMatrix = glm::translate(m_frontWallModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, frontLimit));
   m_frontWallModel.m_modelMatrix = glm::rotate(m_frontWallModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
   m_frontWallModel.m_modelMatrix = glm::scale(m_frontWallModel.m_modelMatrix, glm::vec3(0.0f, 1.0f, 10.0f));
@@ -100,7 +101,6 @@ void OpenGLWindow::paintGL() {
   GLint IsLoc{glGetUniformLocation(m_program, "Is")};
   GLint diffuseTexLoc{glGetUniformLocation(m_program, "diffuseTex")};
 
-  // Set uniform variables used by every scene object
   glUniformMatrix4fv(viewMatrixLoc, 1, GL_FALSE, &m_camera.m_viewMatrix[0][0]);
   glUniformMatrix4fv(projMatrixLoc, 1, GL_FALSE, &m_camera.m_projMatrix[0][0]);
   glUniform1i(diffuseTexLoc, 0);
@@ -151,7 +151,6 @@ void OpenGLWindow::configureModel(Model* model) {
 void OpenGLWindow::paintUI() {
   abcg::OpenGLWindow::paintUI();
 
-// Only in WebGL
 #if defined(__EMSCRIPTEN__)
   fileDialogModel.SetPwd(getAssetsPath());
   fileDialogTex.SetPwd(getAssetsPath() + "/maps");
@@ -178,7 +177,6 @@ void OpenGLWindow::paintUI() {
   ImGui::ColorEdit3("Kd", &m_Kd.x, ImGuiColorEditFlags_Float);
   ImGui::ColorEdit3("Ks", &m_Ks.x, ImGuiColorEditFlags_Float);
   ImGui::PopItemWidth();
-  // Slider to control the specular shininess
   ImGui::PushItemWidth(widgetSize.x - 16);
   ImGui::SliderFloat("", &m_shininess, 0.0f, 500.0f, "shininess: %.1f");
   ImGui::PopItemWidth();

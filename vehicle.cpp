@@ -47,11 +47,11 @@ float Vehicle::getRotationFactor(float deltaTime) {
   }
 
   if (m_actionData.m_input[static_cast<size_t>(Action::Left)]) {
-    rotateFactor += 30.0f * deltaTime;
+    rotateFactor += m_baseSteeringAngle * deltaTime;
   }
 
   if (m_actionData.m_input[static_cast<size_t>(Action::Right)]) {
-    rotateFactor -= 30.0f * deltaTime;
+    rotateFactor -= m_baseSteeringAngle * deltaTime;
   }
 
   return rotateFactor;

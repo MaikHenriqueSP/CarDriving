@@ -12,7 +12,6 @@ class Camera {
   void computeViewMatrix();
   void computeProjectionMatrix(int width, int height); 
   void dolly();
-  void truck(float speed);
   void pan(float deltaTime);
   void initialize(Vehicle* vehicle);
   

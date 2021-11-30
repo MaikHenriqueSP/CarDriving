@@ -25,9 +25,9 @@ void Camera::dolly() {
   auto speed = m_vehicle->getSpeed();
 
   float direction = speed != 0 ? (speed / glm::abs(speed)) : 0;
-
-  float xTarget = m_at.x + counterForward.x * 2.5f * direction;
-  float zTarget = m_at.z + counterForward.z * 2.5f * direction;
+  float distanceFactor = 2.5f;
+  float xTarget = m_at.x + counterForward.x * distanceFactor * direction;
+  float zTarget = m_at.z + counterForward.z * distanceFactor * direction;
 
   auto eyeTargetPosition = glm::vec3(xTarget, m_eye.y, zTarget);
   auto eyeForward = glm::normalize(eyeTargetPosition - m_eye) * direction;
@@ -40,26 +40,14 @@ void Camera::dolly() {
   computeViewMatrix();
 }
 
-void Camera::truck(float speed) {  
-  glm::vec3 forward = glm::normalize(m_at - m_eye);
-  glm::vec3 left = glm::cross(m_up, forward);
-
-  m_at -= left * speed;
-  m_eye -= left * speed;
-
-  computeViewMatrix();
-}
-
 void Camera::pan(float deltaTime) {
   glm::mat4 transform{glm::mat4(1.0f)};
 
   transform = glm::translate(transform, m_eye);
-  transform = glm::rotate(
-      transform, glm::radians(m_vehicle->getRotationFactor(deltaTime)), m_up);
+  transform = glm::rotate(transform, glm::radians(m_vehicle->getRotationFactor(deltaTime)), m_up);
   transform = glm::translate(transform, -m_eye);
 
-  m_at = transform * glm::vec4(m_vehicle->getPosition().x, m_at.y,
-                               m_vehicle->getPosition().z, 1.0f);
+  m_at = transform * glm::vec4(m_vehicle->getPosition().x, m_at.y, m_vehicle->getPosition().z, 1.0f);
 
   computeViewMatrix();
 }
