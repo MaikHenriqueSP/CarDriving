@@ -1,5 +1,4 @@
 #include "openglwindow.hpp"
-
 #include <imgui.h>
 #include <cppitertools/itertools.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
@@ -45,25 +44,35 @@ void OpenGLWindow::initializeGL() {
   auto wallMapFile = "maps/cube.png";
 
   loadModel(wallObjectFile, wallMapFile, &m_leftWallModel);
-  m_leftWallModel.m_modelMatrix =  glm::translate(m_leftWallModel.m_modelMatrix, glm::vec3(-5.3f, 0.0f, -1.0f));
-  m_leftWallModel.m_modelMatrix = glm::scale(m_leftWallModel.m_modelMatrix, glm::vec3(1.0f, 1.0f, 60.0f));
+  float leftLimit = -4.75f;
+  m_leftWallModel.m_modelMatrix =  glm::translate(m_leftWallModel.m_modelMatrix, glm::vec3(leftLimit, 0.0f, -1.0f));
+  m_leftWallModel.m_modelMatrix = glm::scale(m_leftWallModel.m_modelMatrix, glm::vec3(0.0f, 1.0f, 60.0f));
 
   loadModel(wallObjectFile, wallMapFile, &m_rightWallModel);
-  m_rightWallModel.m_modelMatrix =  glm::translate(m_rightWallModel.m_modelMatrix, glm::vec3(5.3f, 0.0f, -1.0f));
-  m_rightWallModel.m_modelMatrix = glm::scale(m_rightWallModel.m_modelMatrix, glm::vec3(1.0f, 1.0f, 60.0f));
+  float rightLimit = 4.75f;
+  m_rightWallModel.m_modelMatrix =  glm::translate(m_rightWallModel.m_modelMatrix, glm::vec3(rightLimit, 0.0f, -1.0f));
+  m_rightWallModel.m_modelMatrix = glm::scale(m_rightWallModel.m_modelMatrix, glm::vec3(0.0f, 1.0f, 60.0f));
 
   loadModel(wallObjectFile, wallMapFile, &m_frontWallModel);
-  m_frontWallModel.m_modelMatrix =  glm::translate(m_frontWallModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, -37.0f));
-  m_frontWallModel.m_modelMatrix = glm::rotate(m_frontWallModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
-  m_frontWallModel.m_modelMatrix = glm::scale(m_frontWallModel.m_modelMatrix, glm::vec3(1.0f, 1.0f, 10.0f));
+  float backwardLimit = -35.7f;
+  m_backWallModel.m_modelMatrix =  glm::translate(m_backWallModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, backwardLimit));
+  m_backWallModel.m_modelMatrix = glm::rotate(m_backWallModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+  m_backWallModel.m_modelMatrix = glm::scale(m_backWallModel.m_modelMatrix, glm::vec3(0.0f, 1.0f, 10.0f));
 
   loadModel(wallObjectFile, wallMapFile, &m_backWallModel);
-  m_backWallModel.m_modelMatrix =  glm::translate(m_backWallModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, 35.1f));
-  m_backWallModel.m_modelMatrix = glm::rotate(m_backWallModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
-  m_backWallModel.m_modelMatrix = glm::scale(m_backWallModel.m_modelMatrix, glm::vec3(1.0f, 1.0f, 10.0f));
+  float frontLimit = 33.7f;
+  m_frontWallModel.m_modelMatrix = glm::translate(m_frontWallModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, frontLimit));
+  m_frontWallModel.m_modelMatrix = glm::rotate(m_frontWallModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+  m_frontWallModel.m_modelMatrix = glm::scale(m_frontWallModel.m_modelMatrix, glm::vec3(0.0f, 1.0f, 10.0f));
+
+  m_carModel.setBorderLimit(BorderLimits::Backward, backwardLimit);
+  m_carModel.setBorderLimit(BorderLimits::Front, frontLimit);
+  m_carModel.setBorderLimit(BorderLimits::Left, leftLimit);
+  m_carModel.setBorderLimit(BorderLimits::Right, rightLimit);
 
   resizeGL(getWindowSettings().width, getWindowSettings().height);
   m_camera.initialize(&m_carModel);
+
 }
 
 void OpenGLWindow::loadModel(std::string objectPath, std::string texturePath,
