@@ -7,7 +7,7 @@ Project developed as an assignment for the MCTA008-17 Computer Graphics class, i
  - It is possible to interact with the application using W, A, S, D and arrow keys.
 
 ### Online Page
-> 
+> https://maikhenriquesp.github.io/CarDriving/public/CarDriving.html
 
 ## Author
 <p>Maik Henrique</p>
