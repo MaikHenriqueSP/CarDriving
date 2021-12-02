@@ -18,13 +18,14 @@ class Vehicle : public Model {
 
  private:
   float m_speed{0.0f};
+  float m_rotationAngle{-90.0f};
+  float m_scaleFactor{0.55f};
+  const float m_baseSteeringAngle{50.0f};
+  const float m_maxSpeed{4.0f};
   glm::vec3 m_forward{0.0f, 0.0f, -1.0f};
   glm::vec3 m_position{0.0f, 0.0f, -0.5f};
   std::unordered_map<BorderLimits, float> m_borderLimitsMap{};
   ActionData m_actionData;
-  float m_rotationAngle{-90.0f};
-  float m_scaleFactor{0.55f};
-  const float m_baseSteeringAngle{30.0f};
   
   void updateDirection(float rotateFactor);
   void updateSpeed(float deltaTime);
