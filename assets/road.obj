@@ -1,6 +1,6 @@
 # Blender v2.79 (sub 0) OBJ File: ''
 # www.blender.org
-mtllib untitled.mtl
+mtllib ./road.mtl
 o rua_Cubo
 v 16.744492 0.849350 1.604423
 v 16.744492 1.150650 1.604423
