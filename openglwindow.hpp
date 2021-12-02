@@ -48,9 +48,6 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   void configureModel(Model* model);
 
   Camera m_camera;
-  float m_dollySpeed{0.0f};
-  float m_truckSpeed{0.0f};
-  float m_panSpeed{0.0f};
 };
 
 #endif
