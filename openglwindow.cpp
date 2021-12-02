@@ -145,12 +145,6 @@ void OpenGLWindow::configureModel(Model* model) {
 
 void OpenGLWindow::paintUI() {
   abcg::OpenGLWindow::paintUI();
-
-#if defined(__EMSCRIPTEN__)
-  fileDialogModel.SetPwd(getAssetsPath());
-  fileDialogTex.SetPwd(getAssetsPath() + "/maps");
-#endif
-
 }
 
 void OpenGLWindow::resizeGL(int width, int height) {
