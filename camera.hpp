@@ -18,6 +18,7 @@ class Camera {
  private:
   friend OpenGLWindow;
   void updateDirection(float rotateFactor);
+  const float m_zoom{2.5f};
 
   Vehicle* m_vehicle;
   glm::vec3 m_eye{glm::vec3(0.0f, 0.6f, 2.5f)};

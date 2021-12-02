@@ -24,10 +24,9 @@ void Camera::dolly() {
   auto counterForward = m_vehicle->getForward() * -1.0f;
   auto speed = m_vehicle->getSpeed();
 
-  float direction = speed != 0 ? (speed / glm::abs(speed)) : 0;
-  float distanceFactor = 2.5f;
-  float xTarget = m_at.x + counterForward.x * distanceFactor * direction;
-  float zTarget = m_at.z + counterForward.z * distanceFactor * direction;
+  float direction = speed != 0 ? (speed / glm::abs(speed)) : 0;  
+  float xTarget = m_at.x + counterForward.x * m_zoom * direction;
+  float zTarget = m_at.z + counterForward.z * m_zoom * direction;
 
   auto eyeTargetPosition = glm::vec3(xTarget, m_eye.y, zTarget);
   auto eyeForward = glm::normalize(eyeTargetPosition - m_eye) * direction;

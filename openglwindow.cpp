@@ -43,43 +43,39 @@ void OpenGLWindow::initializeGL() {
   auto wallObjectFile = "box.obj";
   auto wallMapFile = "maps/cube.png";
 
-  float leftLimit = -4.75f;
-  float rightLimit = 4.75f;
-  float backwardLimit = -35.7f;
-  float frontLimit = 33.7f;
-  
   loadModel(wallObjectFile, wallMapFile, &m_leftWallModel);
-  m_leftWallModel.m_modelMatrix =  glm::translate(m_leftWallModel.m_modelMatrix, glm::vec3(leftLimit, 0.0f, -1.0f));
+  m_leftWallModel.m_modelMatrix =  glm::translate(m_leftWallModel.m_modelMatrix, glm::vec3(m_leftLimit, 0.0f, -1.0f));
   m_leftWallModel.m_modelMatrix = glm::scale(m_leftWallModel.m_modelMatrix, glm::vec3(0.0f, 1.0f, 60.0f));
 
   loadModel(wallObjectFile, wallMapFile, &m_rightWallModel);
-  m_rightWallModel.m_modelMatrix =  glm::translate(m_rightWallModel.m_modelMatrix, glm::vec3(rightLimit, 0.0f, -1.0f));
+  m_rightWallModel.m_modelMatrix =  glm::translate(m_rightWallModel.m_modelMatrix, glm::vec3(m_rightLimit, 0.0f, -1.0f));
   m_rightWallModel.m_modelMatrix = glm::scale(m_rightWallModel.m_modelMatrix, glm::vec3(0.0f, 1.0f, 60.0f));
 
   loadModel(wallObjectFile, wallMapFile, &m_frontWallModel);
-  m_backWallModel.m_modelMatrix =  glm::translate(m_backWallModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, backwardLimit));
+  m_backWallModel.m_modelMatrix =  glm::translate(m_backWallModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, m_backwardLimit));
   m_backWallModel.m_modelMatrix = glm::rotate(m_backWallModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
   m_backWallModel.m_modelMatrix = glm::scale(m_backWallModel.m_modelMatrix, glm::vec3(0.0f, 1.0f, 10.0f));
 
   loadModel(wallObjectFile, wallMapFile, &m_backWallModel);
-  m_frontWallModel.m_modelMatrix = glm::translate(m_frontWallModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, frontLimit));
+  m_frontWallModel.m_modelMatrix = glm::translate(m_frontWallModel.m_modelMatrix, glm::vec3(0.0f, 0.0f, m_frontLimit));
   m_frontWallModel.m_modelMatrix = glm::rotate(m_frontWallModel.m_modelMatrix, glm::radians(-90.0f), glm::vec3(0, 1, 0));
   m_frontWallModel.m_modelMatrix = glm::scale(m_frontWallModel.m_modelMatrix, glm::vec3(0.0f, 1.0f, 10.0f));
 
-  m_carModel.setBorderLimit(BorderLimits::Backward, backwardLimit);
-  m_carModel.setBorderLimit(BorderLimits::Front, frontLimit);
-  m_carModel.setBorderLimit(BorderLimits::Left, leftLimit);
-  m_carModel.setBorderLimit(BorderLimits::Right, rightLimit);
+  m_carModel.setBorderLimit(BorderLimits::Backward, m_backwardLimit);
+  m_carModel.setBorderLimit(BorderLimits::Front, m_frontLimit);
+  m_carModel.setBorderLimit(BorderLimits::Left, m_leftLimit);
+  m_carModel.setBorderLimit(BorderLimits::Right, m_rightLimit);
 
   resizeGL(getWindowSettings().width, getWindowSettings().height);
   m_camera.initialize(&m_carModel);
 
 }
 
-void OpenGLWindow::loadModel(std::string objectPath, std::string texturePath,
-                             Model* model) {
-  model->loadDiffuseTexture(getAssetsPath() + texturePath);
-  model->loadFromFile(getAssetsPath() + objectPath);
+void OpenGLWindow::loadModel(std::string objectPath, std::string texturePath, Model* model) {
+  auto textureFullPath = getAssetsPath() + texturePath;
+  auto objectFullPath = getAssetsPath() + objectPath;
+  model->loadDiffuseTexture(textureFullPath);
+  model->loadFromFile(objectFullPath);
   model->setupVAO(m_program);
 }
 
@@ -132,15 +128,14 @@ void OpenGLWindow::configureModel(Model* model) {
   auto KsLoc{glGetUniformLocation(program, "Ks")};
 
   glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model->m_modelMatrix[0][0]);
-  auto modelViewMatrixRoad{
-      glm::mat3(m_camera.m_viewMatrix * model->m_modelMatrix)};
+  auto modelViewMatrixRoad{glm::mat3(m_camera.m_viewMatrix * model->m_modelMatrix)};
   glm::mat3 normalMatrixRoad{glm::inverseTranspose(modelViewMatrixRoad)};
   glUniformMatrix3fv(normalMatrixLoc, 1, GL_FALSE, &normalMatrixRoad[0][0]);
 
   auto modelKa = model->getKa();
   auto modelKd = model->getKd();
   auto modelKs = model->getKs();
-
+  
   glUniform1f(shininessLoc, model->getShininess());
   glUniform4fv(KaLoc, 1, &modelKa.x);
   glUniform4fv(KdLoc, 1, &modelKd.x);
@@ -156,31 +151,6 @@ void OpenGLWindow::paintUI() {
   fileDialogTex.SetPwd(getAssetsPath() + "/maps");
 #endif
 
-  auto widgetSize{ImVec2(222, 244)};
-  ImGui::SetNextWindowPos(ImVec2(m_viewportWidth - widgetSize.x - 5,
-                                 m_viewportHeight - widgetSize.y - 5));
-  // Create window for light sources
-  ImGui::SetNextWindowSize(widgetSize);
-  ImGui::Begin(" ", nullptr, ImGuiWindowFlags_NoDecoration);
-  ImGui::Text("Light properties");
-  // Slider to control light properties
-  ImGui::PushItemWidth(widgetSize.x - 36);
-  ImGui::ColorEdit3("Ia", &m_Ia.x, ImGuiColorEditFlags_Float);
-  ImGui::ColorEdit3("Id", &m_Id.x, ImGuiColorEditFlags_Float);
-  ImGui::ColorEdit3("Is", &m_Is.x, ImGuiColorEditFlags_Float);
-  ImGui::PopItemWidth();
-  ImGui::Spacing();
-  ImGui::Text("Material properties");
-  // Slider to control material properties
-  ImGui::PushItemWidth(widgetSize.x - 36);
-  ImGui::ColorEdit3("Ka", &m_Ka.x, ImGuiColorEditFlags_Float);
-  ImGui::ColorEdit3("Kd", &m_Kd.x, ImGuiColorEditFlags_Float);
-  ImGui::ColorEdit3("Ks", &m_Ks.x, ImGuiColorEditFlags_Float);
-  ImGui::PopItemWidth();
-  ImGui::PushItemWidth(widgetSize.x - 16);
-  ImGui::SliderFloat("", &m_shininess, 0.0f, 500.0f, "shininess: %.1f");
-  ImGui::PopItemWidth();
-  ImGui::End();
 }
 
 void OpenGLWindow::resizeGL(int width, int height) {

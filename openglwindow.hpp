@@ -30,20 +30,19 @@ class OpenGLWindow : public abcg::OpenGLWindow {
 
   int m_trianglesToDraw{};
 
-  float m_zoom{};
+  const float m_leftLimit{-4.75f};
+  const float m_rightLimit{4.75f};
+  const float m_backwardLimit{-35.7f};
+  const float m_frontLimit{33.7f};
   
   const char* m_shaderName{"texture"};
   GLuint m_program;
   
   glm::vec4 m_lightDir{-1.0f, -1.0f, -1.0f, 0.0f};
-  glm::vec4 m_Ia{1.0f};
-  glm::vec4 m_Id{1.0f};
+  glm::vec4 m_Ia{0.549f, 0.516f, 0.516f, 1.0f};
+  glm::vec4 m_Id{0.797f, 0.767f, 0.767f, 1.0f};
   glm::vec4 m_Is{1.0f};
-  glm::vec4 m_Ka;
-  glm::vec4 m_Kd;
-  glm::vec4 m_Ks;
-  float m_shininess{};
-
+  
   void loadModel(std::string objectPath, std::string texturePath, Model* model);
   void update();
   void configureModel(Model* model);

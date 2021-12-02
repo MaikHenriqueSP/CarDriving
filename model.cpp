@@ -1,6 +1,6 @@
 #include "model.hpp"
 #include <tiny_obj_loader.h>
-
+#include <fmt/core.h>
 #include <cppitertools/itertools.hpp>
 #include <filesystem>
 #include <glm/gtx/hash.hpp>
@@ -76,7 +76,6 @@ void Model::loadDiffuseTexture(std::string_view path) {
 
 void Model::loadFromFile(std::string_view path, bool standardize) {
   auto basePath{std::filesystem::path{path}.parent_path().string() + "/"};
-
   tinyobj::ObjReaderConfig readerConfig;
   readerConfig.mtl_search_path = basePath;
 
@@ -92,7 +91,7 @@ void Model::loadFromFile(std::string_view path, bool standardize) {
   }
 
   if (!reader.Warning().empty()) {
-    fmt::print("Warning: {}\n", reader.Warning());
+    fmt::print("\nWarning: {}\n", reader.Warning());
   }
 
   const auto& attrib{reader.GetAttrib()};
