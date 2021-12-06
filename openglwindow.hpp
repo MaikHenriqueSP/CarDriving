@@ -28,8 +28,6 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   Model m_frontWallModel;
   Model m_backWallModel;
 
-  int m_trianglesToDraw{};
-
   const float m_leftLimit{-4.75f};
   const float m_rightLimit{4.75f};
   const float m_backwardLimit{-35.7f};
@@ -44,7 +42,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   glm::vec4 m_Is{1.0f};
   
   void loadModel(std::string objectPath, std::string texturePath, Model* model);
-  void update();
+  void update(float deltaTime);
   void configureModel(Model* model);
 
   Camera m_camera;

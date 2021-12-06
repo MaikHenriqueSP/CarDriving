@@ -80,8 +80,8 @@ void OpenGLWindow::loadModel(std::string objectPath, std::string texturePath, Mo
 }
 
 void OpenGLWindow::paintGL() {
-  update();
   float deltaTime{static_cast<float>(getDeltaTime())};
+  update(deltaTime);
   m_carModel.update(deltaTime);
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -155,8 +155,7 @@ void OpenGLWindow::resizeGL(int width, int height) {
 
 void OpenGLWindow::terminateGL() { glDeleteProgram(m_program); }
 
-void OpenGLWindow::update() {
-  float deltaTime{static_cast<float>(getDeltaTime())};
+void OpenGLWindow::update(float deltaTime) {
   m_camera.dolly();
   m_camera.pan(deltaTime);
 }

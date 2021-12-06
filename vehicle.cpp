@@ -8,8 +8,7 @@ void Vehicle::update(float deltaTime) {
   m_position += m_forward * m_speed;
   updateOffLimits();
   m_modelMatrix = glm::translate(glm::mat4{1.0f}, m_position);
-  m_modelMatrix = glm::rotate(m_modelMatrix, glm::radians(m_rotationAngle),
-                              glm::vec3(0, 1, 0));
+  m_modelMatrix = glm::rotate(m_modelMatrix, glm::radians(m_rotationAngle),  glm::vec3(0, 1, 0));
 }
 
 void Vehicle::updateAction(Uint32 eventType, Action action) {
