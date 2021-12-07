@@ -1,7 +1,7 @@
 # Car Driving
 Project developed as an assignment for the MCTA008-17 Computer Graphics class, it intends to use OpenGL and the library abcg to have a 3D application.
 
-<p>This is an implementation of a 3D an interactive application in which is possible to drive a car through the circuit.</p>
+<p>This is an implementation of a 3D interactive application in which is possible to drive a car through the circuit.</p>
 
 ## Interactiveness
  - It is possible to interact with the application using W, A, S, D and arrow keys.
